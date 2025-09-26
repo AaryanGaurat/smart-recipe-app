@@ -4,14 +4,15 @@ FROM openjdk:17-slim
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the pom.xml file first to leverage Docker's layer caching
-COPY pom.xml .
+# Copy all the project files into the app directory
+COPY . .
+
+# Force executable permission on the Maven Wrapper ---
+# This command runs on the Render server and guarantees the script is runnable.
+RUN chmod +x mvnw
 
 # Download all the project dependencies
 RUN ./mvnw dependency:go-offline -B
-
-# Copy the rest of your application's source code
-COPY src ./src
 
 # Build the executable "fat JAR"
 RUN ./mvnw package
