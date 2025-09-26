@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap');
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        body { font-family: 'Lato', sans-serif; }
+        .recipe-content ul, .recipe-content ol {
+            padding-left: 1.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        .recipe-content li {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            padding-left: 0.5rem;
+        }
+        /* Styles for printing */
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-container {
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .print-image {
+                display: none !important; /* Hide the big hero image when printing */
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<div class="w-full max-w-5xl mx-auto my-12 bg-white rounded-xl shadow-2xl overflow-hidden print-container">
+
+    <div class="print-image">
+        <img class="h-96 w-full object-cover" src="https://images.pexels.com/photos/9609842/pexels-photo-9609842.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="A delicious finished dish in a bowl">
+    </div>
+
+    <div class="p-6 sm:p-12">
+        <header class="border-b border-gray-200 pb-8 mb-8">
+            <div class="flex justify-between items-start">
+                <h1 class="text-4xl sm:text-6xl font-bold text-gray-900">{{title}}</h1>
+                <button onclick="window.print()" class="no-print ml-4 p-3 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors duration-200" title="Print Recipe">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                </button>
+            </div>
+            <p class="mt-4 text-lg text-gray-600 max-w-3xl">{{description}}</p>
+        </header>
+
+        <div class="flex flex-wrap justify-center text-center gap-x-8 gap-y-4 mb-10 text-gray-700">
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-lg">Prep Time</span>
+                <span>{{prepTime}}</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-lg">Cook Time</span>
+                <span>{{cookTime}}</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-lg">Servings</span>
+                <span>{{servings}}</span>
+            </div>
+        </div>
+
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <aside class="lg:col-span-1 border-gray-200 lg:border-r lg:pr-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4 border-b-2 border-orange-400 inline-block pb-1">Ingredients</h2>
+                <ul class="list-none text-gray-700 space-y-3">
+                    {{#each ingredients}}
+                        <li class="flex items-center">
+                            <span class="block w-2 h-2 bg-orange-400 rounded-full mr-3"></span>
+                            {{{this}}} </li>
+                    {{/each}}
+                </ul>
+            </aside>
+
+            <article class="lg:col-span-2 recipe-content">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4 border-b-2 border-orange-400 inline-block pb-1">Instructions</h2>
+                <ol class="list-decimal list-inside text-gray-700 space-y-4">
+                    {{#each instructions}}
+                        <li>{{{this}}}</li> {{/each}}
+                </ol>
+            </article>
+        </main>
+
+        <footer class="text-center mt-12 border-t border-gray-200 pt-8 no-print">
+            <a href="/" class="text-orange-600 hover:text-orange-500 font-semibold transition-colors duration-200">← Generate a New Recipe</a>
+        </footer>
+    </div>
+</div>
+
+</body>
+</html>
