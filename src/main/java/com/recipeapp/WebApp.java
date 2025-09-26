@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class WebApp {
 
-    private static final String API_KEY = "GROQ_API_KEY";
+    // REMOVED: The incorrect hardcoded API key is no longer here.
 
     public static void main(String[] args) {
         staticFiles.location("/public");
@@ -31,11 +31,29 @@ public class WebApp {
 
         get("/", (req, res) -> new ModelAndView(new HashMap<>(), "index.hbs"), new HandlebarsTemplateEngine());
 
-        post("/generate-recipe", (request, response) -> {
+        // CHANGED: The route name to match the previous working version.
+        post("/generate", (request, response) -> {
             String ingredientsInput = request.queryParams("ingredients");
             Map<String, Object> model = new HashMap<>();
+
+            // CHANGED: Correctly read the API key from the server's environment variables.
+            String apiKey = System.getenv("GROQ_API_KEY");
+
+            // ADDED: A check to see if the API key was found on the server.
+            if (apiKey == null || apiKey.trim().isEmpty()) {
+                model.put("error", true);
+                model.put("errorMessage", "API Key is missing. Please set the GROQ_API_KEY environment variable on your server.");
+                return new ModelAndView(model, "recipe.hbs");
+            }
+
             try {
-                String rawRecipe = getRecipeFromGroq(ingredientsInput);
+                // CHANGED: Pass the fetched API key to the Groq function.
+                String rawRecipe = getRecipeFromGroq(ingredientsInput, apiKey);
+                
+                // The parsing logic below seems specific to a text format, not JSON.
+                // For a more robust solution, you should adjust the AI prompt to return JSON
+                // and parse it directly, as in the previous examples.
+                // However, I will keep your parsing logic for now.
                 model.put("title", parseSection(rawRecipe, "Recipe Name:"));
                 model.put("description", parseSection(rawRecipe, "Description:"));
                 model.put("prepTime", parseSection(rawRecipe, "Prep Time:"));
@@ -60,10 +78,9 @@ public class WebApp {
                 model.put("instructions", instructionsList);
 
             } catch (Exception e) {
-                model.put("title", "An Error Occurred");
-                model.put("description", "There was a problem generating the recipe.");
-                model.put("ingredients", Collections.singletonList("Please check the API Key on the Render server."));
-                model.put("instructions", List.of("The AI server returned an error. This is often due to an invalid or missing API Key in the deployment environment variables."));
+                model.put("error", true);
+                model.put("errorMessage", "The AI server returned an error. This is often due to an invalid or missing API Key. Details: " + e.getMessage());
+                e.printStackTrace();
             }
             return new ModelAndView(model, "recipe.hbs");
         }, new HandlebarsTemplateEngine());
@@ -97,7 +114,8 @@ public class WebApp {
         return text.substring(startIndex, endIndex).trim();
     }
 
-    public static String getRecipeFromGroq(String ingredients) throws Exception {
+    // CHANGED: The method now accepts the apiKey as a parameter.
+    public static String getRecipeFromGroq(String ingredients, String apiKey) throws Exception {
         String systemPrompt = "You are an expert chef specializing in simple, delicious Indian home cooking. Your task is to create an extremely detailed, step-by-step recipe for an absolute beginner." +
                 "\n\n**CRITICAL RULE:** You MUST ONLY use ingredients that are very common in a typical Indian kitchen." +
                 "\n\nFormat the response exactly like this, providing every single field:\n" +
@@ -133,7 +151,8 @@ public class WebApp {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.groq.com/openai/v1/chat/completions"))
-                .header("Authorization", "Bearer " + API_KEY)
+                // CHANGED: Use the apiKey variable for authorization.
+                .header("Authorization", "Bearer " + apiKey)
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
                 .build();
