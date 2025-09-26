@@ -22,9 +22,7 @@ import java.util.stream.Collectors;
 
 public class WebApp {
 
-    // REMOVED: The incorrect hardcoded API key is no longer here.
-
-    public static void main(String[] args) {
+       public static void main(String[] args) {
         staticFiles.location("/public");
         port(getHerokuAssignedPort());
         System.out.println("\n🚀 Server starting...\n");
@@ -114,7 +112,6 @@ public class WebApp {
         return text.substring(startIndex, endIndex).trim();
     }
 
-    // CHANGED: The method now accepts the apiKey as a parameter.
     public static String getRecipeFromGroq(String ingredients, String apiKey) throws Exception {
         String systemPrompt = "You are an expert chef specializing in simple, delicious Indian home cooking. Your task is to create an extremely detailed, step-by-step recipe for an absolute beginner." +
                 "\n\n**CRITICAL RULE:** You MUST ONLY use ingredients that are very common in a typical Indian kitchen." +
@@ -151,7 +148,6 @@ public class WebApp {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.groq.com/openai/v1/chat/completions"))
-                // CHANGED: Use the apiKey variable for authorization.
                 .header("Authorization", "Bearer " + apiKey)
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
