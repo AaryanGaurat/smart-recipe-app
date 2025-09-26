@@ -3,6 +3,7 @@ Smart Recipe Recommendation
 A modern, full-stack web application built with Java that acts as a personal AI chef. Users can input the ingredients they have on hand, and the application leverages a powerful Large Language Model (Groq API) to generate a unique, detailed, and beginner-friendly recipe tailored for Indian home cooking.
 
 This project demonstrates the integration of a Java backend (using SparkJava) with a dynamic, server-rendered frontend (using Handlebars and Tailwind CSS), resulting in a professional and user-friendly website.
+
 ✨ Features
 
     AI-Powered Recipe Generation: Get custom recipes based on any combination of ingredients.
