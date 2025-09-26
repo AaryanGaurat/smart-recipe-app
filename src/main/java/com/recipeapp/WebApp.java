@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class WebApp {
 
-    private static final String API_KEY = "YOUR_GROQ_API_KEY";
+    private static final String API_KEY = "GROQ_API_KEY";
 
     public static void main(String[] args) {
         staticFiles.location("/public");
