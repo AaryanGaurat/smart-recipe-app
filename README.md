@@ -62,7 +62,7 @@ To run this project on your own machine, follow these steps:
 
     Clone the Repository:
 
-    git clone <your-repository-url>
+    git clone https://github.com/AaryanGaurat/smart-recipe-app
     cd smart-recipe-app
 
     Add Your API Key:
